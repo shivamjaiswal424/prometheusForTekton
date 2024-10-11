@@ -9,7 +9,7 @@ spec:
       default: "prometheus"
     - name: NAMESPACE
       description: "Kubernetes namespace where Prometheus will be installed"
-      default: "default"
+      default: "monitoring"  # Set to monitoring as it already exists
     - name: VALUES_FILE
       description: "Optional custom values file for Prometheus installation"
       default: ""
@@ -19,12 +19,6 @@ spec:
       description: "Workspace containing custom values.yaml file"
   
   steps:
-    - name: create-namespace
-      image: bitnami/kubectl:latest # Using kubectl to ensure the namespace exists
-      script: |
-        echo "Ensuring the namespace exists..."
-        kubectl create namespace $(params.NAMESPACE) || true  # Avoid error if it already exists
-
     - name: install-helm
       image: alpine/helm:3.9.0  # Unified Helm version to 3.9.0 for consistency
       script: |
@@ -34,12 +28,28 @@ spec:
         helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
         helm repo update
 
+    - name: uninstall-old-release
+      image: alpine/helm:3.9.0
+      script: |
+        echo "Checking if the release $(params.RELEASE_NAME) exists and uninstalling it if it does..."
+        helm ls --namespace $(params.NAMESPACE) --filter $(params.RELEASE_NAME) | grep $(params.RELEASE_NAME) && \
+        helm uninstall $(params.RELEASE_NAME) --namespace $(params.NAMESPACE) || \
+        echo "No existing release found, proceeding with installation."
+
     - name: install-prometheus
       image: alpine/helm:3.9.0
       script: |
-        echo "Installing Prometheus using Helm..."
-        if [ -n "$(params.VALUES_FILE)" ]; then
-          helm install $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE) -f $(params.VALUES_FILE)
+        echo "Installing or upgrading Prometheus using Helm..."
+        if helm ls --namespace $(params.NAMESPACE) --filter $(params.RELEASE_NAME) | grep $(params.RELEASE_NAME); then
+          echo "Upgrading existing release..."
+          helm upgrade $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE) -f $(params.VALUES_FILE) -v 10
         else
-          helm install $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE)
+          echo "Installing new release..."
+          helm install $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE) -f $(params.VALUES_FILE) -v 10
         fi
+
+    - name: list-workspace
+      image: busybox
+      script: |
+        echo "Listing contents of /workspace/config:"
+        ls -l /workspace/config
