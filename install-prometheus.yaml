@@ -1,0 +1,45 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: install-prometheus
+spec:
+  params:
+    - name: RELEASE_NAME
+      description: "Helm release name"
+      default: "prometheus"
+    - name: NAMESPACE
+      description: "Kubernetes namespace where Prometheus will be installed"
+      default: "default"
+    - name: VALUES_FILE
+      description: "Optional custom values file for Prometheus installation"
+      default: ""
+
+  workspaces:
+    - name: config
+      description: "Workspace containing custom values.yaml file"
+  
+  steps:
+    - name: create-namespace
+      image: bitnami/kubectl:latest # Using kubectl to ensure the namespace exists
+      script: |
+        echo "Ensuring the namespace exists..."
+        kubectl create namespace $(params.NAMESPACE) || true  # Avoid error if it already exists
+
+    - name: install-helm
+      image: alpine/helm:3.9.0  # Unified Helm version to 3.9.0 for consistency
+      script: |
+        echo "Removing old Helm repo if it exists..."
+        helm repo remove prometheus-community || true
+        echo "Adding Prometheus community Helm repository..."
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+
+    - name: install-prometheus
+      image: alpine/helm:3.9.0
+      script: |
+        echo "Installing Prometheus using Helm..."
+        if [ -n "$(params.VALUES_FILE)" ]; then
+          helm install $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE) -f $(params.VALUES_FILE)
+        else
+          helm install $(params.RELEASE_NAME) prometheus-community/prometheus --namespace $(params.NAMESPACE)
+        fi

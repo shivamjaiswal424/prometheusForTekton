@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: install-prometheus-run
+spec:
+  taskRef:
+    name: install-prometheus
+  workspaces:
+    - name: config
+      persistentVolumeClaim:
+        claimName: prometheus-config-pvc  # Use the PVC where values.yaml is stored
+  params:
+    - name: RELEASE_NAME
+      value: "prometheus"
+    - name: NAMESPACE
+      value: "monitoring"
+    - name: VALUES_FILE
+      value: "/workspace/config/prometheus-values.yaml"  # Path to the mounted values.yaml file

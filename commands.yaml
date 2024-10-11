@@ -1,0 +1,16 @@
+kubectl apply -f prometheus-config-pvc.yaml
+kubectl apply -f prometheus-data-pvc.yaml
+
+
+kubectl apply -f install-prometheus.yaml
+kubectl apply -f install-prometheus-run.yaml
+
+
+
+kubectl delete task install-prometheus
+kubectl delete taskrun install-prometheus-run
+
+
+tkn taskrun logs install-prometheus-run -f
+
+kubectl describe taskrun install-prometheus-run
