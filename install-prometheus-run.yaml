@@ -13,6 +13,6 @@ spec:
     - name: RELEASE_NAME
       value: "prometheus"
     - name: NAMESPACE
-      value: "monitoring"
+      value: "default"  # Use the default namespace
     - name: VALUES_FILE
       value: "/workspace/config/prometheus-values.yaml"  # Path to the mounted values.yaml file

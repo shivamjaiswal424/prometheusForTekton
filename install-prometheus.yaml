@@ -9,7 +9,7 @@ spec:
       default: "prometheus"
     - name: NAMESPACE
       description: "Kubernetes namespace where Prometheus will be installed"
-      default: "monitoring"  # Set to monitoring as it already exists
+      default: "default"  # Use the default namespace
     - name: VALUES_FILE
       description: "Optional custom values file for Prometheus installation"
       default: ""
@@ -17,10 +17,10 @@ spec:
   workspaces:
     - name: config
       description: "Workspace containing custom values.yaml file"
-  
+
   steps:
     - name: install-helm
-      image: alpine/helm:3.9.0  # Unified Helm version to 3.9.0 for consistency
+      image: alpine/helm:3.9.0
       script: |
         echo "Removing old Helm repo if it exists..."
         helm repo remove prometheus-community || true
