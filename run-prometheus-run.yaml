@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: run-prometheus-run
+spec:
+  taskRef:
+    name: run-prometheus
+  workspaces:
+    - name: prometheus-storage
+      persistentVolumeClaim:
+        claimName: prometheus-pvc  # Use the single PVC for both config and data

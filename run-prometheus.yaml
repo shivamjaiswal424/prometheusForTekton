@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-prometheus
+spec:
+  workspaces:
+    - name: prometheus-storage
+      description: "Workspace for Prometheus configuration and data"
+  
+  steps:
+    - name: setup-prometheus
+      image: prom/prometheus:latest
+      command: ["sh", "-c"]
+      args:
+        - |
+          echo "Starting Prometheus..."
+          prometheus --config.file=/workspace/prometheus-storage/prometheus.yml --storage.tsdb.path=/workspace/prometheus-storage/data
