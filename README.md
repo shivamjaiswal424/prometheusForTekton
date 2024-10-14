@@ -1,5 +1,25 @@
 # prometheusForTekton
+
+Prometheus Task Documentation
+Overview
+The run-prometheus task is designed to automate the setup and execution of Prometheus, a powerful monitoring and alerting toolkit. This task creates the necessary configuration for Prometheus, runs the server, and allows users to easily access the monitoring data.
+
+Parameters
+prometheus_storage: PersistentVolumeClaim to be used for storing the Prometheus configuration and data.
+prometheus_port: Port on which the Prometheus server will listen. Defaults to 9090.
+Workspaces
+prometheus-storage: A PersistentVolumeClaim-type workspace for storing Prometheus configuration and data.
+Steps
+Write Configuration:
+This step creates the prometheus.yml configuration file in the specified workspace.
+Run Prometheus:
+This step executes the Prometheus server using the configuration provided in the previous step.
+Platforms
+The Task can be run on linux/amd64 platform.
+
+
 Steps to Implement
+
 1.Create the PersistentVolumeClaim: Ensure you apply the PVC before running the Task:
 
 kubectl apply -f prometheus-pvc.yaml
@@ -21,3 +41,8 @@ kubectl apply -f prometheus-service.yaml
 kubectl port-forward svc/prometheus-service 9090:9090
 
 Access Prometheus: Open your web browser and navigate to http://localhost:9090 to access the Prometheus UI.
+
+Important Notes
+Adjust the labels in the Service definition to match your Prometheus pod's labels.
+Ensure that the PVC is correctly provisioned before the TaskRun is executed.
+The write-config step creates the Prometheus configuration file inside the PVC. Make sure this part works before starting Prometheus.
