@@ -1,20 +1,31 @@
 # prometheusForTekton
 
-Prometheus Task Documentation
 Overview
+
 The run-prometheus task is designed to automate the setup and execution of Prometheus, a powerful monitoring and alerting toolkit. This task creates the necessary configuration for Prometheus, runs the server, and allows users to easily access the monitoring data.
 
 Parameters
+
 prometheus_storage: PersistentVolumeClaim to be used for storing the Prometheus configuration and data.
+
 prometheus_port: Port on which the Prometheus server will listen. Defaults to 9090.
+
 Workspaces
+
 prometheus-storage: A PersistentVolumeClaim-type workspace for storing Prometheus configuration and data.
+
 Steps
+
 Write Configuration:
+
 This step creates the prometheus.yml configuration file in the specified workspace.
+
 Run Prometheus:
+
 This step executes the Prometheus server using the configuration provided in the previous step.
+
 Platforms
+
 The Task can be run on linux/amd64 platform.
 
 
