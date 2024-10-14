@@ -1,8 +1,7 @@
 kubectl apply -f prometheus-pvc.yaml
-kubectl apply -f config-writer.yaml
 kubectl apply -f run-prometheus.yaml
 kubectl apply -f run-prometheus-run.yaml
-kubectl apply prometheus-service.yaml
+kubectl apply -f prometheus-service.yaml
 kubectl port-forward svc/prometheus-service 9090:9090
 
 kubectl apply -f role.yaml

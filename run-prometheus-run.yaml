@@ -8,4 +8,4 @@ spec:
   workspaces:
     - name: prometheus-storage
       persistentVolumeClaim:
-        claimName: prometheus-pvc  # Use the single PVC for both config and data
+        claimName: prometheus-pvc

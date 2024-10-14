@@ -5,9 +5,9 @@ metadata:
   namespace: default
 spec:
   selector:
-    tekton.dev/task: run-prometheus  # Update this to match your pod's labels
+    app.kubernetes.io/managed-by: tekton-pipelines  # Adjust to match your pod's labels
   ports:
     - protocol: TCP
-      port: 9090
-      targetPort: 9090
+      port: 9090       # Port to access the service
+      targetPort: 9090  # Port on the Prometheus pod
   type: ClusterIP
