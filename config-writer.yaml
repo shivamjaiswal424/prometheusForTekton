@@ -6,7 +6,7 @@ spec:
   initContainers:
   - name: init-writer
     image: busybox
-    command: ["sh", "-c", "echo 'global:\n  scrape_interval: 10s\nscrape_configs:\n  - job_name: my_job\n    static_configs:\n      - targets: [\"localhost:9090\"]' > /mnt/pvc/prometheus.yml"]
+    command: ["sh", "-c", "echo -e 'global:\n  scrape_interval: 10s\n\nscrape_configs:\n  - job_name: my_job\n    static_configs:\n      - targets: [\"localhost:9090\"]' > /mnt/pvc/prometheus.yml"]
     volumeMounts:
       - mountPath: /mnt/pvc
         name: config-volume
@@ -17,5 +17,5 @@ spec:
   volumes:
   - name: config-volume
     persistentVolumeClaim:
-      claimName: prometheus-pvc  # Use your PVC name
+      claimName: prometheus-pvc
   restartPolicy: Never
