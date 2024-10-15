@@ -30,9 +30,10 @@ The Task can be run on linux/amd64 platform.
 
 kubectl apply -f prometheus-pvc.yaml
 
-2.Run the Task: Execute the TaskRun to start Prometheus:
+2.Run the Task & Taskrun: Execute the TaskRun to start Prometheus:
 
 kubectl apply -f run-prometheus.yaml
+kubectl apply-f run-prometheus-run.yaml
 
 3.Verify the TaskRun: Check the status of the TaskRun to see if it completed successfully:
 
