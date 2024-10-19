@@ -1,17 +1,12 @@
+kubectl create configmap prometheus-config --from-file=prometheus.yml
 kubectl apply -f prometheus-pvc.yaml
 kubectl apply -f run-prometheus.yaml
+
 kubectl apply -f run-prometheus-run.yaml
 kubectl apply -f prometheus-service.yaml
 kubectl port-forward svc/prometheus-service 9090:9090
 
 kubectl apply -f role.yaml
-
-
-
-
-
-
-
 
 
 
@@ -21,8 +16,12 @@ kubectl delete pvc prometheus-pvc
 kubectl delete pod run-prometheus-run
 
 kubectl delete service prometheus-service
+kubectl delete configmap prometheus-config
 
 tkn taskrun logs run-prometheus-run -f
 
 kubectl describe taskrun run-prometheus-run
 
+repayment_score_requests_total
+app_health_status
+python_gc_objects_collected_total

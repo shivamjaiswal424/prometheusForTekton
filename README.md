@@ -31,8 +31,9 @@ The Task can be run on linux/amd64 platform.
 
 Steps to Implement
 
-1.Create the PersistentVolumeClaim: Ensure you apply the PVC before running the Task:
+1.Create the ConfigMap & PersistentVolumeClaim : Ensure you apply the PVC before running the Task:
 
+kubectl create configmap prometheus-config --from-file=prometheus.yml
 kubectl apply -f prometheus-pvc.yaml
 
 2.Run the Task: Execute the TaskRun to start Prometheus:

@@ -9,25 +9,29 @@ metadata:
     tekton.dev/pipelines.minVersion: "0.12.1"
     tekton.dev/tags: prometheus
     tekton.dev/displayName: "Run Prometheus"
-    tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
     A task that sets up and runs a Prometheus monitoring server.
 
   workspaces:
     - name: prometheus-storage
-      description: "Workspace for Prometheus configuration and data"
+      description: "Workspace for Prometheus data"
+      optional: false
 
   steps:
-    - name: write-config
-      image: busybox
-      script: |
-        echo -e 'global:\n  scrape_interval: 10s\n\nscrape_configs:\n  - job_name: my_job\n    static_configs:\n      - targets: ["localhost:9090"]' > /workspace/prometheus-storage/prometheus.yml
-
+    # Step to set up and run Prometheus
     - name: setup-prometheus
       image: prom/prometheus:latest
+      volumeMounts:
+        - name: prometheus-config-volume  # Mount the ConfigMap with prometheus.yml
+          mountPath: /etc/prometheus/
       command: ["sh", "-c"]
       args:
         - |
           echo "Starting Prometheus..."
-          prometheus --config.file=/workspace/prometheus-storage/prometheus.yml --storage.tsdb.path=/workspace/prometheus-storage/data
+          prometheus --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/workspace/prometheus-storage/data
+
+  volumes:
+    - name: prometheus-config-volume  # The volume that mounts the ConfigMap
+      configMap:
+        name: prometheus-config  # The ConfigMap that contains prometheus.yml
