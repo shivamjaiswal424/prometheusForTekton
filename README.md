@@ -1,44 +1,40 @@
 # prometheusForTekton
 
-Overview
+## Overview
 
 The run-prometheus task is designed to automate the setup and execution of Prometheus, a powerful monitoring and alerting toolkit. This task creates the necessary configuration for Prometheus, runs the server, and allows users to easily access the monitoring data.
 
-Parameters
+### Parameters
 
-prometheus_storage: PersistentVolumeClaim to be used for storing the Prometheus configuration and data.
+1.prometheus_storage: PersistentVolumeClaim to be used for storing the Prometheus configuration and data.
+2.prometheus_port: Port on which the Prometheus server will listen. Defaults to 9090.
 
-prometheus_port: Port on which the Prometheus server will listen. Defaults to 9090.
+## Workspaces
 
-Workspaces
+1.prometheus-storage: A PersistentVolumeClaim-type workspace for storing Prometheus configuration and data.
 
-prometheus-storage: A PersistentVolumeClaim-type workspace for storing Prometheus configuration and data.
+## Steps
 
-Steps
+### Write Configuration: This step creates the prometheus.yml configuration file in the specified workspace.
 
-Write Configuration:
+### Run Prometheus: This step executes the Prometheus server using the configuration provided in the previous step.
 
-This step creates the prometheus.yml configuration file in the specified workspace.
-
-Run Prometheus:
-
-This step executes the Prometheus server using the configuration provided in the previous step.
-
-Platforms
+## Platforms
 
 The Task can be run on linux/amd64 platform.
 
 
-Steps to Implement
+## Steps to Implement
 
 1.Create the ConfigMap & PersistentVolumeClaim : Ensure you apply the PVC before running the Task:
 
 kubectl create configmap prometheus-config --from-file=prometheus.yml
 kubectl apply -f prometheus-pvc.yaml
 
-2.Run the Task: Execute the TaskRun to start Prometheus:
+2.Run the Task & Taskrun: Execute the TaskRun to start Prometheus:
 
 kubectl apply -f run-prometheus.yaml
+kubectl apply -f run-prometheus-run.yaml
 
 3.Verify the TaskRun: Check the status of the TaskRun to see if it completed successfully:
 
